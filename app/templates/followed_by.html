@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>关注者列表</title>
+</head>
+<body>
+<table border="1">
+	<caption>{{ user.name }}{{ title }}</caption>
+	<tr>
+		<th>用户名</th>
+		<th>姓名</th>
+		<th>关注时间</th>
+	</tr>
+	{% for fd in follows %}
+	<tr>
+		<td>{{ fd.followed.username }}</td>
+		<td>{{ fd.followed.name}}</td>
+		<td>{{ fd.timestamp }}</td>
+	</tr>
+	{% endfor %}
+</table>
+
+</body>
+</html>

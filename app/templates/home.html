@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% extends 'bootstrap_base.html' %}
+
+{% block page_content %}
+
+<div class="page-header">
+	<h1>生命</h1>
+	{% if current_user.is_authenticated %}
+	<h2>{{ current_user.username }}</h2>
+	{% else %}
+	<h2>Stranger</h2>
+	{% endif %}
+	<h3>is_authenticated: {{current_user.is_authenticated}}</h3>
+	<h3>is_active: {{current_user.is_active}}</h3>
+	<h3>is_aninomous: {{current_user.is_anonymous}}</h3>
+	<h3>get_id: {{current_user.get_id}}</h3>
+
+</div>
+	
+{% endblock %} 

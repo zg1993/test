@@ -1,0 +1,51 @@
+
+
+
+{% extends "bootstrap_base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+<!-- <script type="text/javascript">
+	$(function() {
+		var submit_from = function(e) {
+			$.getJSON('/_add_numbers', {
+				a: $('input[name="a"]').val(),
+				b: $('input[name="b"]').val()
+			},function(data) {
+				$('#result').text('ssss');
+				$('input[name=a]').focus().select();
+			});
+			return false;
+		};
+		alert('sad')
+		$('input[name="b"]').bind('click', submit_from);
+
+		$('input[type=text]').bind('keydown', function(e) {
+			if (e.keyCode == 13){
+				submit_from(e);
+			}
+		});
+
+		$('input[name=a]').focus();
+	});	
+</script> -->
+
+
+{% block titel %}Flasky - Register{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+	<h1>Register</h1>
+</div>
+<div class="col-md-4">
+	{{ wtf.quick_form(form) }}
+</div>
+<!-- <p>
+	<input type="text" name="a" size="5">+
+	<input type="text" name="b" size="5">=
+	<span id="result">?</span>
+	<p><a href=# id="calculate">calculate server side</a></p>
+	{{ request.script_root|tojson|safe }}
+
+</p> -->
+{% endblock %}

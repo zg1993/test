@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% extends 'bootstrap_base.html' %}
+
+{% block page_content %}
+<div class="page-header">
+	<h1>生命</h1>
+	<h2>{{ current_user.username }}</h2>
+	<h3>not confirmed your account</h3>
+	<h3>is_authenticated: {{current_user.is_authenticated}}</h3>
+	<h3>is_active: {{current_user.is_active}}</h3>
+	<h3>is_aninomous: {{current_user.is_anonymous}}</h3>
+	<h3>get_id: {{current_user.get_id}}</h3>
+	<p><a href="{{ url_for('auth.resend_confirmation', _external=True) }}">Click here to resend confiremation</a></p>
+</div>
+	
+{% endblock %}

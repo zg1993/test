@@ -1,0 +1,52 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+<meta charset="utf-8">  
+<title>Flask JQuery</title>  
+<!-- 插入jquery -->  
+<script src="//code.jquery.com/jquery-1.11.3.min.js')}}"></script>  
+<script type=text/javascript>  
+var $SCRIPT_ROOT = {{request.script_root|tojson|safe}};  
+</script>  
+ 
+</head>  
+<body>  
+<script type="text/javascript">
+    $(function() {
+        var submit_from = function(e) {
+            $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+                a: $('input[name="a"]').val(),
+                b: $('input[name="b"]').val()
+            },function(data) {
+                $('#result').text('ads');
+                $('input[name=a]').focus().select();
+            });
+            return false;
+        };
+
+        $('input[name="b"]').bind('blur', submit_from);
+
+        $('input[type=text]').bind('keydown', function(e) {
+            if (e.keyCode == 13){
+                submit_from(e);
+            }
+        });
+
+        $('input[name=a]').focus();
+    });
+</script>
+
+
+
+
+<h1>JQuery Example</h1>
+<p>
+    <input type="text" name="a" size="5">+
+    <input type="text" name="b" size="5">=
+    <span id="result">?</span>
+    <p><a href=# id="calculate">calculate server side</a></p>
+    {{ request.script_root|tojson|safe }}
+</p>
+
+</body>  
+</html>   
