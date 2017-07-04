@@ -17,6 +17,8 @@ mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 login_manager = LoginManager()
+# session_protection 属性可以设为 None、'basic' 或 'strong'，以提供不同的安全等级防止用户会话遭篡改
+# strong：Flask-Login 会记录客户端 IP 地址和浏览器的用户代理信息，如果发现异动就登出用户
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 pagedown = PageDown()
@@ -37,6 +39,7 @@ def create_app(config_name):
 	# 本地化日期和时间初始化
 	moment.init_app(app)
 	db.init_app(app)
+	# 初始化 Flask-Login 
 	login_manager.init_app(app)
 	pagedown.init_app(app)
 	#import pdb
@@ -49,6 +52,7 @@ def create_app(config_name):
 	from .main import main as main_blueprint
 	app.register_blueprint(main_blueprint)
 
+	# url_prefix指定前缀的添加
 	from .auth import auth as auth_blueprint
 	app.register_blueprint(auth_blueprint, url_prefix='/auth')
 

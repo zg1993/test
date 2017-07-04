@@ -21,7 +21,8 @@ def login():
 		print('into validate_on_submit..............{}'.format(form.email.data))
 		user = User.query.filter_by(email=form.email.data).first()
 		if user is not None and user.verify_password(form.password.data):
-			# 标记用户登录，之后该用户可以通过login_required
+			# 标记用户已登录，之后该用户可以通过login_required
+			# login_user()函数还有一个可选可选的“记住我”布尔值
 			login_user(user, form.remember_me.data)
 			print('next:{}'.format(request.args.get('next')))
 			return redirect(request.args.get('next') or url_for('main.home'))
@@ -37,6 +38,7 @@ def login():
 #login_required 只有登录了的用户才能通过（login_user(user, form.remember_me.data)）
 @login_required
 def logout():
+	#删除并重设用户会话，和login_user对应
 	logout_user()
 	flash('You have been logged out.')
 	return redirect(url_for('main.home'))
@@ -79,12 +81,17 @@ def confirm(token):
 	return redirect(url_for('main.home'))
 
 
+# 处理程序中过滤未确认的账户 
 @auth.before_app_request
 def before_request():
 	print('into before_request...............')
 	print('is_authenticated...............{}'.format(current_user.is_authenticated))
 	#print('request.endpoint[:5]...............{}'.format(request.endpoint[:5]))
 	print('request................{}'.format(request))
+	# 1.用户已登录（current_user.is_authenticated() 必须返回 True）
+	# 2.用户的账户还未确认
+	# 3.请求的端点（使用 request.endpoint 获取）不在认证蓝本中
+	# 满足以上 3 个条件，则会被重定向到 /auth/unconfirmed 路由
 	if current_user.is_authenticated:
 		current_user.ping()
 		if not current_user.confirmed and request.endpoint[:5] != 'auth.' and request.endpoint != 'static':
@@ -100,6 +107,7 @@ def unconfirmed():
 	return render_template('auth/unconfirmed.html')
 
 
+# 重新发送账户确认邮件 
 @auth.route('/confirm')
 @login_required
 def resend_confirmation():

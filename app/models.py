@@ -15,6 +15,7 @@ from markdown import markdown
 import bleach
 from app.exceptions import ValidationError
 import pdb
+# TimedJSONWebSignatureSerializer类生成具有过期时间的 JSON Web 签名
 
 
 class Permission:
@@ -154,6 +155,7 @@ class Role(db.Model):
 	def __repr__(self):
 		return '<Role {}>'.format(self.name)
 
+	# 在数据库中创建角色
 	@staticmethod
 	def insert_roles():
 		roles = {
@@ -193,6 +195,7 @@ class User(UserMixin, db.Model):
 	email = db.Column(db.String(64), unique=True, index=True)
 	username = db.Column(db.String(64), unique = True)
 	#password = db.Column(db.string(64))
+	# 加入密码散列 
 	password_hash = db.Column(db.String(128))
 	role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 	confirmed = db.Column(db.Boolean, default=False)
@@ -239,19 +242,25 @@ class User(UserMixin, db.Model):
 	def __repr__(self):
 		return '<User {}>'.format(self.username)
 
+	# @property装饰器负责把一个方法变成属性调用
 	@property
 	def password(self):
 		raise AttributeError('password is not a readable attribute')
 
+	# 生成密码散列
+	# @password.setter负责把一个setter方法变成属性赋值
 	@password.setter
 	def password(self, password):
 		self.password_hash = generate_password_hash(password)
 
+	# 密码散列值比对
 	def verify_password(self, password):
 		return check_password_hash(self.password_hash, password) 
 
+	# 使用 itsdangerous 包生成包含用户 id 的安全令牌
 	def generate_confirmation_token(self, expiration=180):
 		s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+		# 对数据和签名进行序列化，生成令牌字符串
 		return s.dumps({'confirm': self.id})
 
 	def confirm(self, token):
@@ -261,6 +270,7 @@ class User(UserMixin, db.Model):
 		except:
 			print('except')
 			return False
+		# 检查令牌中的 id 是否和存储在 current_user 中的已登录用户匹
 		if data.get('confirm') != self.id:
 			print('self.id:{}'.format(self.id))
 			return False
@@ -384,7 +394,6 @@ class User(UserMixin, db.Model):
 		return json_user
 
 			
-
 class AnonymousUser(AnonymousUserMixin):
 
 
@@ -395,9 +404,11 @@ class AnonymousUser(AnonymousUserMixin):
 		return False
 
 
+# Flask-Login 要求程序实现一个回调函数，使用指定的标识符加载用户
 @login_manager.user_loader
 def load_user(user_id):
 	print('into...load_user{}'.format(user_id))
+	# 找到用户的话，返回用户对象；否则应该返回 None
 	return User.query.get(int(user_id))
 
 
