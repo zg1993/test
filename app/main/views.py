@@ -17,6 +17,12 @@ from flask import make_response
 from flask import current_app
 from flask_sqlalchemy import get_debug_queries
 
+# request：Flask请求上下文
+# 把 request 当作全局变量使用
+# 事实上，request 不可能是全局变量。对于不同请求request也是不同。
+# Falsk 使用上下文让特定的变量在一个线程中全局可访问，与此同时却不会干扰其他线程。
+
+
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -25,6 +31,10 @@ def index():
 	if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
 		post = Post(body=form.body.data, au=current_user._get_current_object())
 		db.session.add(post)
+		# url_for()以视图函数名作为参数，返回对应的 URL
+		# url_for('index', _external=True) 返回的则是绝对地址
+		# url_for() 生成动态地址时，将动态部分作为关键字参数传入
+		# 程序内不同的路由，相对地址足够。如果要生成在浏览器之外使用的链接，则必须使用绝对地址
 		return redirect(url_for('.index'))
 	#posts = Post.query.order_by(Post.timestamp.desc()).all()
 	page = request.args.get('page', 1, type=int)
@@ -155,6 +165,7 @@ def post(id):
 		comment = Comment(body=form.body.data,
 						  post=post,
 						  author=current_user._get_current_object())
+		# 向数据库中添加数据
 		db.session.add(comment)
 		flash('You comment has been published.')
 		return redirect(url_for('.post', id=post.id, page=-1))

@@ -16,14 +16,20 @@ from flask_login import current_user
 def login():
 	form = LoginForm()
 	print('into login..............{}'.format(form.email.data))
+	# 验证是否收到表单函数
 	if form.validate_on_submit():
 		print('into validate_on_submit..............{}'.format(form.email.data))
 		user = User.query.filter_by(email=form.email.data).first()
 		if user is not None and user.verify_password(form.password.data):
+			# 标记用户登录，之后该用户可以通过login_required
 			login_user(user, form.remember_me.data)
 			print('next:{}'.format(request.args.get('next')))
 			return redirect(request.args.get('next') or url_for('main.home'))
+		# 模板通过Flask的get_flashed_ messages()函数去调用flash的消息
+		# 注：get_flashed_messages()函数获取的消息在下次调用时不会再次返回
 		flash(' invalid username or password.')
+	# Flask 提供的 render_template 函数把 Jinja2 模板引擎集成到了程序中
+	# render_template 函数的第一个参数是模板的文件名。随后的参数都是键值对，表示模板中变量对应的真实值。
 	return render_template('auth/login.html', form=form)
 
 

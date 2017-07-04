@@ -63,13 +63,17 @@ def profile(length=25, profile_dir=None):
 	app.run()
 
 
+# 部署命令 
 @manager.command
 def deploy():
 	"""Run deployment tasks."""
 	from flask_migrate import upgrade
 	
+	# 把数据库迁移到最新修订版本 
 	upgrade()
+	# 创建用户角色 
 	Role.insert_roles()
+	# 让所有用户都关注自己
 	User.add_self_follows()
 	
 	
@@ -78,6 +82,9 @@ manager.add_command('db', MigrateCommand)
 
 
 if __name__ == '__main__':
+	# 启动服务器
+	# 有一些选项参数可被 app.run() 函数接受用于设置 Web 服务器的操作模式
+	# 启用调试模式： manager.run(debug=True)
 	manager.run()
 
 

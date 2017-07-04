@@ -88,6 +88,7 @@ class Post(db.Model):
 	#server process markdown -> hmtl
 	body_html = db.Column(db.Text)
 	#add comments
+	# backref 参数向Comment模型中添加一个 post 属性
 	comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
 

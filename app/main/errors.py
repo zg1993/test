@@ -7,8 +7,8 @@ from flask import jsonify
 from flask import request
 from . import main
 
-
-
+# 自定义错误页面
+# 蓝本中编写错误处理程序
 @main.app_errorhandler(404)
 def page_not_found(e):
 	if request.accept_mimetypes.accept_json and \

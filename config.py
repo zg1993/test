@@ -7,8 +7,9 @@ import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
+# 配置类的定义
 class Config:
+	# 密钥设置-实现跨站请求伪造保护
 	SECRET_KEY = os.environ.get('SECRET_KEY') or 'shengming'
 	SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 	SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -62,6 +63,7 @@ class ProductionConfig(Config):
 	def init_app(cls, app):
 		Config.init_app(app)
 
+		# 把错误通过电子邮件发送给管理员 
 		import logging
 		from logging.handlers import SMTPHandler
 		credentials = None
